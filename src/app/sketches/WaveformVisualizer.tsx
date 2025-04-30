@@ -27,12 +27,19 @@ export default function WaveformVisualizer({
   const materialRef = useRef<THREE.LineBasicMaterial | null>(null);
   const animationFrameRef = useRef<number | undefined>(undefined);
   const isInitializedRef = useRef(false);
+  const [isMounted, setIsMounted] = useState(false);
 
   const { analyser, dataArray, isListening, error, startListening, stopListening } = useAudioContext();
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [waveformColor, setWaveformColor] = useState(DEFAULT_COLOR);
   const [sensitivity, setSensitivity] = useState(DEFAULT_SENSITIVITY);
   
+  // Initialize component on mount
+  useEffect(() => {
+    setIsMounted(true);
+    return () => setIsMounted(false);
+  }, []);
+
   const cleanup = useCallback(() => {
     if (animationFrameRef.current) {
       cancelAnimationFrame(animationFrameRef.current);
@@ -64,7 +71,7 @@ export default function WaveformVisualizer({
   }, []);
 
   const setupScene = useCallback(() => {
-    if (!containerRef.current || isInitializedRef.current) return;
+    if (!containerRef.current || isInitializedRef.current || !isMounted) return;
 
     cleanup(); // Clean up any existing scene
 
@@ -73,7 +80,7 @@ export default function WaveformVisualizer({
     const camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000);
     const renderer = new THREE.WebGLRenderer({ 
       antialias: true,
-      preserveDrawingBuffer: true // Preserve the drawing buffer
+      preserveDrawingBuffer: true
     });
     renderer.setClearColor(DEFAULT_BACKGROUND_COLOR);
     renderer.setSize(width, height);
@@ -106,10 +113,10 @@ export default function WaveformVisualizer({
     camera.position.z = 5;
 
     isInitializedRef.current = true;
-  }, [width, height, waveformColor, cleanup]);
+  }, [width, height, waveformColor, cleanup, isMounted]);
 
   const animate = useCallback(() => {
-    if (!rendererRef.current || !sceneRef.current || !cameraRef.current || !geometryRef.current) return;
+    if (!rendererRef.current || !sceneRef.current || !cameraRef.current || !geometryRef.current || !isMounted) return;
 
     animationFrameRef.current = requestAnimationFrame(animate);
 
@@ -131,27 +138,29 @@ export default function WaveformVisualizer({
     }
 
     rendererRef.current.render(sceneRef.current, cameraRef.current);
-  }, [analyser, dataArray, sensitivity]);
+  }, [analyser, dataArray, sensitivity, isMounted]);
 
   const handleResize = useCallback(() => {
-    if (!isFullscreen || !rendererRef.current || !cameraRef.current) return;
+    if (!isFullscreen || !rendererRef.current || !cameraRef.current || !isMounted) return;
 
     const w = window.innerWidth;
     const h = window.innerHeight;
     cameraRef.current.aspect = w / h;
     cameraRef.current.updateProjectionMatrix();
     rendererRef.current.setSize(w, h);
-  }, [isFullscreen]);
+  }, [isFullscreen, isMounted]);
 
   // Update material color when waveformColor changes
   useEffect(() => {
-    if (materialRef.current) {
+    if (materialRef.current && isMounted) {
       materialRef.current.color.set(waveformColor);
     }
-  }, [waveformColor]);
+  }, [waveformColor, isMounted]);
 
   // Setup and cleanup
   useEffect(() => {
+    if (!isMounted) return;
+
     setupScene();
     animate();
 
@@ -161,11 +170,16 @@ export default function WaveformVisualizer({
       window.removeEventListener('resize', handleResize);
       cleanup();
     };
-  }, [setupScene, animate, handleResize, cleanup]);
+  }, [setupScene, animate, handleResize, cleanup, isMounted]);
 
   const toggleFullscreen = useCallback(() => {
     setIsFullscreen(prev => !prev);
   }, []);
+
+  // Don't render anything until mounted
+  if (!isMounted) {
+    return null;
+  }
 
   return (
     <div className={`relative ${isFullscreen ? 'fixed inset-0 z-50 bg-black' : ''}`}>
