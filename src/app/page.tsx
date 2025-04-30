@@ -1,29 +1,56 @@
-import Link from 'next/link';
+'use client';
+
+import dynamic from 'next/dynamic';
+import BentoGrid, { BentoGridItem } from './components/BentoGrid';
+
+// Dynamically import components to avoid SSR issues
+const WaveformVisualizer = dynamic(() => import('./sketches/WaveformVisualizer'), {
+  ssr: false,
+  loading: () => (
+    <div className="w-full h-full flex items-center justify-center">
+      <div className="animate-pulse text-white/50">Loading visualization...</div>
+    </div>
+  ),
+});
 
 export default function Home() {
   return (
-    <div className="container mx-auto px-4 py-8">
-      <header className="mb-12">
-        <h1 className="text-4xl font-bold mb-2">Visual</h1>
-        <p className="text-gray-400">Interactive Music Reactive Sketches</p>
-      </header>
-
-      <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {/* Example sketch card - will be replaced with dynamic content */}
-        <div className="bg-gray-900 rounded-lg p-6 hover:bg-gray-800 transition-colors">
-          <h2 className="text-xl font-semibold mb-2">Waveform Visualizer</h2>
-          <p className="text-gray-400 mb-4">A Three.js sketch that visualizes audio waveforms in real-time</p>
-          <div className="flex justify-between items-center">
-            <span className="text-sm text-gray-500">Three.js</span>
-            <Link 
-              href="/sketches/waveform" 
-              className="px-4 py-2 bg-blue-600 rounded hover:bg-blue-700 transition-colors"
-            >
-              View
-            </Link>
+    <BentoGrid>
+      <BentoGridItem span="col-span-2 row-span-2">
+        <div className="flex flex-col h-full">
+          <h2 className="text-2xl font-bold text-white mb-4">Waveform Visualizer</h2>
+          <div className="flex-1">
+            <WaveformVisualizer />
           </div>
         </div>
-      </section>
-    </div>
+      </BentoGridItem>
+
+      <BentoGridItem>
+        <div className="flex flex-col h-full">
+          <h2 className="text-2xl font-bold text-white mb-4">Audio Controls</h2>
+          <div className="flex-1 flex items-center justify-center">
+            <div className="text-white/70">Audio controls coming soon...</div>
+          </div>
+        </div>
+      </BentoGridItem>
+
+      <BentoGridItem>
+        <div className="flex flex-col h-full">
+          <h2 className="text-2xl font-bold text-white mb-4">Visualization Library</h2>
+          <div className="flex-1 flex items-center justify-center">
+            <div className="text-white/70">More visualizations coming soon...</div>
+          </div>
+        </div>
+      </BentoGridItem>
+
+      <BentoGridItem span="col-span-2">
+        <div className="flex flex-col h-full">
+          <h2 className="text-2xl font-bold text-white mb-4">About</h2>
+          <div className="flex-1 flex items-center justify-center">
+            <div className="text-white/70">Project information coming soon...</div>
+          </div>
+        </div>
+      </BentoGridItem>
+    </BentoGrid>
   );
 }
