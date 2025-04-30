@@ -10,9 +10,9 @@ interface WaveformVisualizerProps {
   title?: string;
 }
 
-const DEFAULT_COLOR = '#3b82f6';
+const DEFAULT_COLOR = '#00ff88';
 const DEFAULT_SENSITIVITY = 2;
-const DEFAULT_BACKGROUND_COLOR = 0xffffff;
+const DEFAULT_BACKGROUND_COLOR = 0x000000;
 
 export default function WaveformVisualizer({ 
   width = 800, 
@@ -80,9 +80,11 @@ export default function WaveformVisualizer({
     const camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000);
     const renderer = new THREE.WebGLRenderer({ 
       antialias: true,
+      alpha: true, // Enable transparency
       preserveDrawingBuffer: true
     });
-    renderer.setClearColor(DEFAULT_BACKGROUND_COLOR);
+    
+    renderer.setClearColor(DEFAULT_BACKGROUND_COLOR, 0); // Set transparent background
     renderer.setSize(width, height);
     
     // Store refs for cleanup
@@ -182,15 +184,15 @@ export default function WaveformVisualizer({
   }
 
   return (
-    <div className={`relative ${isFullscreen ? 'fixed inset-0 z-50 bg-white' : ''}`}>
-      <div className="absolute top-4 left-4 z-10 bg-white/80 backdrop-blur-md rounded-xl p-6 text-gray-800 shadow-lg border border-gray-100">
+    <div className={`relative ${isFullscreen ? 'fixed inset-0 z-50 bg-black' : ''}`}>
+      <div className="absolute top-4 left-4 z-10 bg-black/80 backdrop-blur-md rounded-xl p-6 text-white">
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-2xl font-semibold text-gray-800">
+          <h2 className="text-2xl font-bold text-white">
             {title}
           </h2>
           <button
             onClick={toggleFullscreen}
-            className="p-2 rounded-lg hover:bg-gray-100 transition-colors"
+            className="p-2 rounded-lg hover:bg-white/10 transition-colors"
             title={isFullscreen ? 'Exit Fullscreen' : 'Enter Fullscreen'}
           >
             {isFullscreen ? (
@@ -207,24 +209,24 @@ export default function WaveformVisualizer({
 
         <div className="space-y-6">
           <div className="space-y-2">
-            <label className="block text-sm font-medium text-gray-700">Waveform Color</label>
+            <label className="block text-sm font-medium text-gray-300">Waveform Color</label>
             <div className="flex items-center gap-4">
               <input
                 type="color"
                 value={waveformColor}
                 onChange={(e) => setWaveformColor(e.target.value)}
-                className="w-12 h-12 rounded-lg cursor-pointer border-2 border-gray-200 hover:border-gray-300 transition-colors"
+                className="w-12 h-12 rounded-lg cursor-pointer bg-transparent border-2 border-white/20 hover:border-white/40 transition-colors"
               />
               <div className="flex-1">
-                <div className="h-2 rounded-full bg-gradient-to-r from-transparent via-current to-transparent" style={{ backgroundColor: waveformColor }} />
+                <div className="h-2 rounded-full" style={{ backgroundColor: waveformColor }} />
               </div>
             </div>
           </div>
 
           <div className="space-y-2">
             <div className="flex items-center justify-between">
-              <label className="block text-sm font-medium text-gray-700">Sensitivity</label>
-              <span className="text-sm font-mono text-gray-600">{sensitivity.toFixed(1)}x</span>
+              <label className="block text-sm font-medium text-gray-300">Sensitivity</label>
+              <span className="text-sm font-mono text-gray-400">{sensitivity.toFixed(1)}x</span>
             </div>
             <input
               type="range"
@@ -233,43 +235,39 @@ export default function WaveformVisualizer({
               step="0.1"
               value={sensitivity}
               onChange={(e) => setSensitivity(parseFloat(e.target.value))}
-              className="w-full h-2 bg-gray-100 rounded-lg appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-blue-500 [&::-webkit-slider-thumb]:hover:bg-blue-600 [&::-webkit-slider-thumb]:transition-colors"
+              className="w-full h-2 bg-white/10 rounded-lg appearance-none cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-white [&::-webkit-slider-thumb]:hover:bg-gray-200 [&::-webkit-slider-thumb]:transition-colors"
             />
           </div>
 
-          <div className="flex gap-3">
-            <button
-              onClick={() => isListening ? stopListening() : startListening()}
-              className={`flex-1 px-6 py-3 rounded-lg font-medium transition-all duration-200 ${
-                isListening 
-                  ? 'bg-red-500 hover:bg-red-600 shadow-lg shadow-red-500/20 text-white' 
-                  : 'bg-blue-500 hover:bg-blue-600 shadow-lg shadow-blue-500/20 text-white'
-              }`}
-            >
-              <div className="flex items-center justify-center gap-2">
-                {isListening ? (
-                  <>
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
-                    </svg>
-                    Stop Audio
-                  </>
-                ) : (
-                  <>
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
-                    </svg>
-                    Start Audio
-                  </>
-                )}
-              </div>
-            </button>
-          </div>
+          <button
+            onClick={() => isListening ? stopListening() : startListening()}
+            className={`w-full px-6 py-3 rounded-lg font-medium transition-all duration-200 flex items-center justify-center gap-2 ${
+              isListening 
+                ? 'bg-red-500/20 hover:bg-red-500/30 text-red-400' 
+                : 'bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-400'
+            }`}
+          >
+            {isListening ? (
+              <>
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
+                </svg>
+                Stop Audio
+              </>
+            ) : (
+              <>
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
+                </svg>
+                Start Audio
+              </>
+            )}
+          </button>
         </div>
       </div>
 
       {error && (
-        <div className="absolute top-4 right-4 z-10 bg-red-500/90 backdrop-blur-md text-white px-6 py-3 rounded-xl shadow-lg border border-red-400/20 animate-fade-in">
+        <div className="absolute top-4 right-4 z-10 bg-red-500/20 backdrop-blur-md text-red-400 px-6 py-3 rounded-xl border border-red-500/20 animate-fade-in">
           <div className="flex items-center gap-2">
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -281,7 +279,7 @@ export default function WaveformVisualizer({
 
       <div 
         ref={containerRef} 
-        className={`w-full h-full ${isFullscreen ? '' : 'rounded-xl overflow-hidden shadow-lg'}`}
+        className={`w-full h-full ${isFullscreen ? '' : 'rounded-xl overflow-hidden'} bg-black`}
       />
     </div>
   );
