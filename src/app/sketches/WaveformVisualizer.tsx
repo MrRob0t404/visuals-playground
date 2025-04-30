@@ -25,20 +25,56 @@ export default function WaveformVisualizer({
   const cameraRef = useRef<THREE.PerspectiveCamera | null>(null);
   const geometryRef = useRef<THREE.BufferGeometry | null>(null);
   const materialRef = useRef<THREE.LineBasicMaterial | null>(null);
-  const animationFrameRef = useRef<number>();
+  const animationFrameRef = useRef<number | undefined>(undefined);
+  const isInitializedRef = useRef(false);
 
   const { analyser, dataArray, isListening, error, startListening, stopListening } = useAudioContext();
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [waveformColor, setWaveformColor] = useState(DEFAULT_COLOR);
   const [sensitivity, setSensitivity] = useState(DEFAULT_SENSITIVITY);
   
+  const cleanup = useCallback(() => {
+    if (animationFrameRef.current) {
+      cancelAnimationFrame(animationFrameRef.current);
+      animationFrameRef.current = undefined;
+    }
+
+    if (rendererRef.current) {
+      rendererRef.current.dispose();
+      rendererRef.current = null;
+    }
+
+    if (geometryRef.current) {
+      geometryRef.current.dispose();
+      geometryRef.current = null;
+    }
+
+    if (materialRef.current) {
+      materialRef.current.dispose();
+      materialRef.current = null;
+    }
+
+    if (containerRef.current && containerRef.current.firstChild) {
+      containerRef.current.removeChild(containerRef.current.firstChild);
+    }
+
+    sceneRef.current = null;
+    cameraRef.current = null;
+    isInitializedRef.current = false;
+  }, []);
+
   const setupScene = useCallback(() => {
-    if (!containerRef.current) return;
+    if (!containerRef.current || isInitializedRef.current) return;
+
+    cleanup(); // Clean up any existing scene
 
     // Scene setup
     const scene = new THREE.Scene();
     const camera = new THREE.PerspectiveCamera(75, width / height, 0.1, 1000);
-    const renderer = new THREE.WebGLRenderer({ antialias: true });
+    const renderer = new THREE.WebGLRenderer({ 
+      antialias: true,
+      preserveDrawingBuffer: true // Preserve the drawing buffer
+    });
     renderer.setClearColor(DEFAULT_BACKGROUND_COLOR);
     renderer.setSize(width, height);
     
@@ -68,7 +104,9 @@ export default function WaveformVisualizer({
 
     // Position camera
     camera.position.z = 5;
-  }, [width, height, waveformColor]);
+
+    isInitializedRef.current = true;
+  }, [width, height, waveformColor, cleanup]);
 
   const animate = useCallback(() => {
     if (!rendererRef.current || !sceneRef.current || !cameraRef.current || !geometryRef.current) return;
@@ -105,6 +143,14 @@ export default function WaveformVisualizer({
     rendererRef.current.setSize(w, h);
   }, [isFullscreen]);
 
+  // Update material color when waveformColor changes
+  useEffect(() => {
+    if (materialRef.current) {
+      materialRef.current.color.set(waveformColor);
+    }
+  }, [waveformColor]);
+
+  // Setup and cleanup
   useEffect(() => {
     setupScene();
     animate();
@@ -113,20 +159,9 @@ export default function WaveformVisualizer({
 
     return () => {
       window.removeEventListener('resize', handleResize);
-      if (animationFrameRef.current) {
-        cancelAnimationFrame(animationFrameRef.current);
-      }
-      if (geometryRef.current) {
-        geometryRef.current.dispose();
-      }
-      if (materialRef.current) {
-        materialRef.current.dispose();
-      }
-      if (rendererRef.current) {
-        rendererRef.current.dispose();
-      }
+      cleanup();
     };
-  }, [setupScene, animate, handleResize]);
+  }, [setupScene, animate, handleResize, cleanup]);
 
   const toggleFullscreen = useCallback(() => {
     setIsFullscreen(prev => !prev);
