@@ -1,129 +1,152 @@
-# Visual - Interactive Music Reactive Sketches
+# Visual Playground — MVP
 
-A modern web platform for creating and sharing interactive, music-reactive creative coding sketches. Built with Next.js, TypeScript, and Three.js, this platform allows DJs, VJs, and creative coders to create and share their audio-visual experiences.
+A minimalist, high-performance website for hosting creative coding projects using libraries like `canvas-sketch`, `p5.js`, and `Three.js`. Designed with DJs in mind as a visual tool, built using **Next.js**, **React**, **TypeScript**, and **TailwindCSS**.
 
-## Features
+---
 
-- 🎵 Real-time audio visualization
-- 🎨 Support for Three.js, canvas-sketch, and Hydra.js sketches
-- 🎛️ Interactive parameter controls
-- 🎧 Audio input support
-- 🌙 Sleek dark-themed UI
-- 📱 Responsive design
-- 🔄 Real-time updates
-- 🎮 Fullscreen mode
-- 🎨 Customizable visualizations
+## Objective
+
+Create a personal site to showcase generative and interactive visual coding projects with a simple and intuitive UI. Over time, this may evolve into a visual companion for DJs and performers.
+
+---
+
+## Scope
+
+**In Scope (MVP):**
+
+- Project gallery and individual project pages (using Next.js routing)
+- Visual sketch embedding using JS frameworks
+- Tailwind-styled responsive UI
+- Error monitoring using Sentry
+- Clean TypeScript + React architecture via Next.js
+
+**Out of Scope (MVP):**
+
+- Audio-reactive features
+- User authentication
+- Multi-user submissions
+- Real-time sync or collaboration
 
 ## Tech Stack
 
-- [Next.js](https://nextjs.org/) - React framework
-- [TypeScript](https://www.typescriptlang.org/) - Type safety
-- [Three.js](https://threejs.org/) - 3D graphics
-- [Tailwind CSS](https://tailwindcss.com/) - Styling
-- [Web Audio API](https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API) - Audio processing
+| Layer      | Tech                                |
+| ---------- | ----------------------------------- |
+| Framework  | Next.js (React, Hybrid SSR/SSG/CSR) |
+| Language   | TypeScript                          |
+| Styling    | TailwindCSS                         |
+| Sketches   | p5.js, canvas-sketch, Three.js      |
+| Logging    | Sentry                              |
+| Deployment | Vercel or Netlify                   |
+| Versioning | Git + GitHub                        |
 
-## Getting Started
+## ✨ Features
 
-### Prerequisites
+### Project Gallery
 
-- Node.js 18.0.0 or later
-- npm or yarn
-- A modern web browser
+- Responsive grid layout
+- Lazy-loaded thumbnails
+- Hover animations or previews
 
-### Installation
+### Project Detail Page
 
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/yourusername/visual-website.git
-   cd visual-website
-   ```
+- Fullscreen sketch display
+- Title, description, metadata
+- Return to gallery button
 
-2. Install dependencies:
-   ```bash
-   npm install
-   # or
-   yarn install
-   ```
+### Visual Embeds
 
-3. Start the development server:
-   ```bash
-   npm run dev
-   # or
-   yarn dev
-   ```
+- Load interactive projects via script
+- Sandboxed and dynamic loading
+- Optional fullscreen/lightbox mode
 
-4. Open [http://localhost:3000](http://localhost:3000) in your browser.
+### Navigation
 
-## Development
+- Logo/title
+- About or Contact section (static)
 
-### Project Structure
+### Monitoring (Sentry)
 
+- Frontend error tracking
+- Tagged breadcrumbs for route/project
+- Logging project interaction failures
+
+---
+
+## Requirements
+
+### Functional
+
+- `FR1`: Display at least 10 hosted projects
+- `FR2`: Each project has a route (`/projects/:slug`)
+- `FR3`: Integrate Sentry error logging
+- `FR4`: Page load time < 2s (excluding heavy rendering)
+
+### Non-Functional
+
+- `NFR1`: Mobile-first responsive design
+- `NFR2`: TypeScript strict mode enabled
+- `NFR3`: TailwindCSS utility-first; no external CSS
+- `NFR4`: Code-splitting and lazy-loading best practices
+- `NFR5`: No sensitive data in logs
+
+---
+
+## Milestones
+
+| Milestone | Task                                    | ETA    |
+| --------- | --------------------------------------- | ------ |
+| M1        | Scaffold Next.js app with Tailwind + TS | Week 1 |
+| M2        | Gallery layout and dynamic routes       | Week 2 |
+| M3        | Visual embed system and project pages   | Week 3 |
+| M4        | Sentry integration + perf tuning        | Week 4 |
+| M5        | Deployment + polish                     | Week 5 |
+
+---
+
+## Best Practices
+
+### Next.js + TypeScript
+
+- Use `app/` or `pages/` based on routing needs
+- Enable strict mode in `tsconfig.json`
+- Code-split large sketch components (`dynamic()`)
+
+### TailwindCSS
+
+- Consistent use of utility classes
+- Avoid inline styles or custom CSS
+- Use `@apply` for reuse when appropriate
+
+### Logging (Sentry)
+
+- Wrap app in error boundary
+- Tag logs with project slug and route
+- Avoid logging sensitive or unnecessary data
+
+---
+
+## Setup (Local Development)
+
+```bash
+git clone <your-repo>
+cd visual-playground
+npm install
+npm run dev
 ```
-visual-website/
-├── src/
-│   ├── app/              # Next.js app directory
-│   │   ├── components/   # Reusable components
-│   │   ├── hooks/        # Custom React hooks
-│   │   ├── sketches/     # Creative coding sketches
-│   │   └── styles/       # Global styles
-│   └── types/            # TypeScript type definitions
-├── public/               # Static assets
-└── package.json          # Project dependencies
-```
 
-### Available Scripts
+Then visit http://localhost:3000.
 
-- `npm run dev` - Start development server
-- `npm run build` - Build for production
-- `npm run start` - Start production server
-- `npm run lint` - Run ESLint
-- `npm run type-check` - Run TypeScript type checking
+## Example Sketch Frameworks
 
-## Contributing
+- canvas-sketch
+- p5.js
+- Three.js (via react-three-fiber or raw)
 
-We welcome contributions from the community! Here's how you can help:
+## Coming Soon (Post-MVP Ideas)
 
-1. Fork the repository
-2. Create a new branch for your feature:
-   ```bash
-   git checkout -b feature/your-feature-name
-   ```
-3. Make your changes
-4. Run the linter and type checker:
-   ```bash
-   npm run lint
-   npm run type-check
-   ```
-5. Commit your changes with a descriptive message
-6. Push to your fork and create a pull request
+- Audio-reactive visuals
+- MIDI input for live manipulation
+- DJ sync integrations
+- User submissions & account dashboard
 
-### Guidelines
-
-- Follow the existing code style
-- Write meaningful commit messages
-- Add tests for new features
-- Update documentation as needed
-- Keep pull requests focused and small
-
-### Creating a New Sketch
-
-1. Create a new file in `src/app/sketches/` with your sketch name
-2. Implement your sketch using Three.js, canvas-sketch, or Hydra.js
-3. Add proper cleanup and error handling
-4. Add controls using the provided UI components
-5. Test your sketch with different audio inputs
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## Acknowledgments
-
-- [Three.js](https://threejs.org/) for 3D graphics
-- [Next.js](https://nextjs.org/) for the framework
-- [Tailwind CSS](https://tailwindcss.com/) for styling
-- The creative coding community for inspiration
-
-## Support
-
-If you have any questions or need help, please open an issue in the repository.
+---
