@@ -35,14 +35,14 @@ export default function Home() {
 
   return (
     <main className="min-h-screen bg-gray-50">
-      <div className="container mx-auto px-4 py-4">
-        <div className="flex flex-col lg:flex-row gap-4 h-[calc(100vh-2rem)]">
-          {/* Main Visual Sketch - Full width */}
+      <div className="container mx-auto px-4 py-4 h-screen">
+        <div className="flex flex-col lg:flex-row gap-4 h-full">
+          {/* Main Visual Sketch - 80% of viewport */}
           <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 0.5 }}
-            className="w-full lg:w-[calc(100%-450px)] bg-white rounded-xl overflow-hidden shadow-lg h-[50vh] lg:h-auto relative visual-container"
+            className="w-full lg:w-[80%] bg-white rounded-xl overflow-hidden shadow-lg h-[50vh] lg:h-full relative visual-container"
           >
             <button
               onClick={toggleFullscreen}
@@ -65,13 +65,13 @@ export default function Home() {
           </motion.div>
 
           {/* Side Panels Container */}
-          <div className="lg:w-[450px] flex flex-col gap-4">
+          <div className="lg:w-[20%] flex flex-col gap-4 h-[50vh] lg:h-full">
             {/* Controls Panel */}
             <motion.div
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.5, delay: 0.2 }}
-              className="bg-white rounded-xl shadow-lg"
+              className="bg-white rounded-xl shadow-lg flex-1"
             >
               <div className="p-4 border-b border-gray-100">
                 <h2 className="text-xl font-bold text-gray-800">Controls</h2>
@@ -102,7 +102,7 @@ export default function Home() {
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.5, delay: 0.3 }}
-              className="bg-white rounded-xl shadow-lg"
+              className="bg-white rounded-xl shadow-lg flex-1"
             >
               <div className="p-4 border-b border-gray-100">
                 <h2 className="text-xl font-bold text-gray-800">Info</h2>
