@@ -1,103 +1,143 @@
-import Image from "next/image";
+'use client';
+
+import { motion } from 'framer-motion';
+import { Suspense, useState } from 'react';
+import dynamic from 'next/dynamic';
+
+// Dynamically import the Three.js component to avoid SSR issues
+const VisualSketch = dynamic(() => import('@/components/VisualSketch'), {
+  ssr: false,
+  loading: () => (
+    <div className="w-full h-full flex items-center justify-center bg-gray-100">
+      <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-gray-900"></div>
+    </div>
+  ),
+});
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+  const [isFullscreen, setIsFullscreen] = useState(false);
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+  const toggleFullscreen = () => {
+    const visualContainer = document.querySelector('.visual-container');
+    if (!visualContainer) return;
+
+    if (!isFullscreen) {
+      if (visualContainer.requestFullscreen) {
+        visualContainer.requestFullscreen();
+      }
+    } else {
+      if (document.exitFullscreen) {
+        document.exitFullscreen();
+      }
+    }
+    setIsFullscreen(!isFullscreen);
+  };
+
+  return (
+    <main className="min-h-screen bg-gray-50">
+      <div className="container mx-auto px-4 py-4">
+        <div className="flex flex-col lg:flex-row gap-4 h-[calc(100vh-2rem)]">
+          {/* Main Visual Sketch - Full width */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.5 }}
+            className="w-full lg:w-[calc(100%-450px)] bg-white rounded-xl overflow-hidden shadow-lg h-[50vh] lg:h-auto relative visual-container"
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+            <button
+              onClick={toggleFullscreen}
+              className="absolute top-4 right-4 z-10 bg-white/80 hover:bg-white text-gray-800 p-2 rounded-lg shadow-md transition-all duration-200 hover:scale-105"
+              aria-label={isFullscreen ? "Exit fullscreen" : "Enter fullscreen"}
+            >
+              {isFullscreen ? (
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 9V4.5M9 9H4.5M15 9H19.5M15 9V4.5M15 15v4.5M15 15H4.5M15 15h4.5M9 15v4.5" />
+                </svg>
+              ) : (
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5v-4m0 4h-4m4 0l-5-5" />
+                </svg>
+              )}
+            </button>
+            <Suspense fallback={<div>Loading...</div>}>
+              <VisualSketch />
+            </Suspense>
+          </motion.div>
+
+          {/* Side Panels Container */}
+          <div className="lg:w-[450px] flex flex-col gap-4">
+            {/* Controls Panel */}
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.5, delay: 0.2 }}
+              className="bg-white rounded-xl shadow-lg"
+            >
+              <div className="p-4 border-b border-gray-100">
+                <h2 className="text-xl font-bold text-gray-800">Controls</h2>
+              </div>
+              <div className="p-4 space-y-4">
+                {/* Camera Controls */}
+                <div className="bg-gray-50 rounded-lg p-3">
+                  <h3 className="text-base font-semibold text-gray-700 mb-2">Camera</h3>
+                  <p className="text-sm text-gray-500">Camera controls coming soon...</p>
+                </div>
+
+                {/* Animation Controls */}
+                <div className="bg-gray-50 rounded-lg p-3">
+                  <h3 className="text-base font-semibold text-gray-700 mb-2">Animation</h3>
+                  <p className="text-sm text-gray-500">Animation parameters coming soon...</p>
+                </div>
+
+                {/* Visual Parameters */}
+                <div className="bg-gray-50 rounded-lg p-3">
+                  <h3 className="text-base font-semibold text-gray-700 mb-2">Visual Parameters</h3>
+                  <p className="text-sm text-gray-500">Visual customization options coming soon...</p>
+                </div>
+              </div>
+            </motion.div>
+
+            {/* Info Panel */}
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.5, delay: 0.3 }}
+              className="bg-white rounded-xl shadow-lg"
+            >
+              <div className="p-4 border-b border-gray-100">
+                <h2 className="text-xl font-bold text-gray-800">Info</h2>
+              </div>
+              <div className="p-4 space-y-4">
+                {/* Project Info */}
+                <div className="bg-gray-50 rounded-lg p-3">
+                  <h3 className="text-base font-semibold text-gray-700 mb-2">About This Project</h3>
+                  <p className="text-sm text-gray-600">
+                    A collection of interactive Three.js visualizations exploring various creative coding concepts.
+                  </p>
+                </div>
+
+                {/* Technical Details */}
+                <div className="bg-gray-50 rounded-lg p-3">
+                  <h3 className="text-base font-semibold text-gray-700 mb-2">Technical Details</h3>
+                  <ul className="list-disc list-inside text-sm text-gray-600 space-y-0.5">
+                    <li>Built with Three.js and React Three Fiber</li>
+                    <li>Responsive design with TailwindCSS</li>
+                    <li>Interactive controls and animations</li>
+                  </ul>
+                </div>
+
+                {/* Instructions */}
+                <div className="bg-gray-50 rounded-lg p-3">
+                  <h3 className="text-base font-semibold text-gray-700 mb-2">How to Use</h3>
+                  <p className="text-sm text-gray-600">
+                    Use your mouse to interact with the visualization. More detailed instructions coming soon...
+                  </p>
+                </div>
+              </div>
+            </motion.div>
+          </div>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+      </div>
+    </main>
   );
 }
