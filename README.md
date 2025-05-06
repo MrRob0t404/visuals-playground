@@ -1,3 +1,5 @@
+[![Netlify Status](https://api.netlify.com/api/v1/badges/44144fa5-51a0-417e-ae0a-86d22638cdb4/deploy-status)](https://app.netlify.com/sites/visual-playground/deploys)
+
 # Visual Playground — MVP
 
 A minimalist, high-performance website for hosting creative coding projects using libraries like `canvas-sketch`, `p5.js`, and `Three.js`. Designed with DJs in mind as a visual tool, built using **Next.js**, **React**, **TypeScript**, and **TailwindCSS**.
