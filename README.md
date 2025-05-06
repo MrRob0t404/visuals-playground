@@ -2,13 +2,9 @@
 
 A minimalist, high-performance website for hosting creative coding projects using libraries like `canvas-sketch`, `p5.js`, and `Three.js`. Designed with DJs in mind as a visual tool, built using **Next.js**, **React**, **TypeScript**, and **TailwindCSS**.
 
----
-
 ## Objective
 
 Create a personal site to showcase generative and interactive visual coding projects with a simple and intuitive UI. Over time, this may evolve into a visual companion for DJs and performers.
-
----
 
 ## Scope
 
@@ -70,8 +66,6 @@ Create a personal site to showcase generative and interactive visual coding proj
 - Tagged breadcrumbs for route/project
 - Logging project interaction failures
 
----
-
 ## Requirements
 
 ### Functional
@@ -89,8 +83,6 @@ Create a personal site to showcase generative and interactive visual coding proj
 - `NFR4`: Code-splitting and lazy-loading best practices
 - `NFR5`: No sensitive data in logs
 
----
-
 ## Milestones
 
 | Milestone | Task                                    | ETA    |
@@ -100,8 +92,6 @@ Create a personal site to showcase generative and interactive visual coding proj
 | M3        | Visual embed system and project pages   | Week 3 |
 | M4        | Sentry integration + perf tuning        | Week 4 |
 | M5        | Deployment + polish                     | Week 5 |
-
----
 
 ## Best Practices
 
@@ -122,8 +112,6 @@ Create a personal site to showcase generative and interactive visual coding proj
 - Wrap app in error boundary
 - Tag logs with project slug and route
 - Avoid logging sensitive or unnecessary data
-
----
 
 ## Setup (Local Development)
 
