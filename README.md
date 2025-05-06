@@ -39,7 +39,7 @@ Create a personal site to showcase generative and interactive visual coding proj
 | Deployment | Vercel or Netlify                   |
 | Versioning | Git + GitHub                        |
 
-## ✨ Features
+## Features
 
 ### Project Gallery
 
