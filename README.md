@@ -116,7 +116,7 @@ Create a personal site to showcase generative and interactive visual coding proj
 ## Setup (Local Development)
 
 ```bash
-git clone <your-repo>
+clone the repo
 cd visual-playground
 npm install
 npm run dev
