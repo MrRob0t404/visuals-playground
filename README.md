@@ -6,12 +6,17 @@ A minimalist, high-performance website for hosting creative coding projects usin
 
 Create a personal site to showcase generative and interactive visual coding projects with a simple and intuitive UI. Over time, this may evolve into a visual companion for DJs and performers.
 
+## Architecture
+
+This is a single-page application (SPA) built with Next.js, focusing on smooth transitions and a seamless user experience. The main visual sketch takes up 60% of the viewport, with supporting content arranged in a bento-style layout around it.
+
 ## Scope
 
 **In Scope (MVP):**
 
-- Project gallery and individual project pages (using Next.js routing)
-- Visual sketch embedding using JS frameworks
+- Single-page application with smooth transitions
+- Bento-style layout with main visual sketch (60% viewport)
+- Visual sketch embedding using canvas-sketch (primary) and Three.js
 - Tailwind-styled responsive UI
 - Error monitoring using Sentry
 - Clean TypeScript + React architecture via Next.js
@@ -39,7 +44,8 @@ Create a personal site to showcase generative and interactive visual coding proj
 
 ### Project Gallery
 
-- Responsive grid layout
+- Bento-style layout with main visual sketch (60% viewport)
+- Responsive grid layout for supporting content
 - Lazy-loaded thumbnails
 - Hover animations or previews
 
